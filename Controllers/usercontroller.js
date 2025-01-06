@@ -206,7 +206,9 @@ const loginUser = asyncHandler(async (req, res) => {
       res.status(200).json({
         Status: 2,
         Message: "Please Verify your Email Otp sent to your Email Address",
-        user: user._id,
+        user: {
+          id:user._id,
+        },
         otp: resetToken,
         // UserToken: generateToken(user._id),
       });
@@ -223,14 +225,20 @@ const loginUser = asyncHandler(async (req, res) => {
     if (!device.status) {
       return res.status(200).json({
         Status: 0,
-        Message: "Simething went wrong",
+        Message: "Something went wrong",
       });
     }
-
+    const responseUser = {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      profilepic: user.profilepic,
+    };
     res.status(200).json({
       Status: 1,
       Message: "Login successful",
-      user: user,
+      user: responseUser,
       UserToken: generateToken(user._id),
     });
   } else {
@@ -303,10 +311,11 @@ const verifyOtp = asyncHandler(async (req, res) => {
       user.emailverified = true;
       user.otp = null;
       await user.save();
+      const newUser = await User.findOne({ email }).select("firstName lastName email profilepic");
       res.status(200).json({
         Status: 1,
         Message: "Registration successfully",
-        info: user,
+        info: newUser,
         UserToken: generateToken(user._id),
       });
     }
@@ -314,10 +323,11 @@ const verifyOtp = asyncHandler(async (req, res) => {
       user.emailverified = true;
       user.otp = null;
       await user.save();
+      const newUser = await User.findOne({ email }).select("firstName lastName email profilepic");
       res.status(200).json({
         Status: 1,
         Message: "Login successfully",
-        info: user,
+        info: newUser,
         UserToken: generateToken(user._id),
       });
     } else if (pass_req == 2) {
@@ -344,6 +354,10 @@ const verifyOtp = asyncHandler(async (req, res) => {
 
 const resetPassword = asyncHandler(async (req, res) => {
   const { email, otp, password } = req.body;
+  console.log("fsdkjfhsyfksd");
+  console.log(email);
+  console.log(otp);
+  console.log(password);
 
   if (!email || !otp) {
     return res.status(200).json({
@@ -461,10 +475,7 @@ const logout = asyncHandler(async (req, res) => {
     }
   }
 
-  res.status(200).json({
-    Status: 0,
-    Message: "Logout successful",
-  });
+
 });
 
 
