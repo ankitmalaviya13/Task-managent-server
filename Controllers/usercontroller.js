@@ -90,10 +90,17 @@ const signupUser = asyncHandler(async (req, res) => {
 
 const getUser = asyncHandler(async (req, res) => {
   if (req.user) {
+    const responseUser = {
+      id: req.user._id,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      email: req.user.email,
+      profilepic: req.user.profilepic,
+    };
     return res.status(200).json({
       Status: 1,
       Message: "User get Successfully",
-      user: req.user,
+      user: responseUser,
     });
   } else {
     return res.status(200).json({
@@ -140,11 +147,17 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 
   await user.save();
-
+  const responseUser = {
+    id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    profilepic: user.profilepic,
+  };
   return res.status(200).json({
     Status: 1,
     Message: "User Update Successfully",
-    user: user,
+    user: responseUser,
   });
 });
 
@@ -605,7 +618,10 @@ const thirdpartyUser = asyncHandler(async (req, res) => {
 });
 
 const users = asyncHandler(async (req, res) => {
-  const users = await User.find().select("firstName lastName email");
+  console.log(req.query);
+  const{offset,limit} =req.query 
+  const users = await User.find().select("firstName lastName email profilepic") .skip(offset)
+  .limit(limit);
   res.status(200).json({
     Status: 1,
     Message: "User get successful",

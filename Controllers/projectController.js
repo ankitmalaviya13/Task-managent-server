@@ -13,14 +13,18 @@ const addProject = asyncHandler(async (req, res) => {
       Message: "Please fill all the fields",
     });
   }
-newmembers = members.split(",");
-if(newmembers.length===0||!newmembers.includes(req.userId)){
+let newmembers = [];
+  if(members){
+    newmembers = members.split(",");
+
+  }
+  if(newmembers.length===0||!newmembers.includes(req.userId)){
+      
+    newmembers.push(req.userId);
   
-  newmembers.push(req.userId);
-
-}
-
-const objectIdMembers =newmembers.map((id) => new ObjectId(id));
+  }
+  
+  const objectIdMembers =newmembers.map((id) => new ObjectId(id));
 
   const project = await Project.create({
   name:name,
@@ -33,7 +37,7 @@ const objectIdMembers =newmembers.map((id) => new ObjectId(id));
   if (populatedProject) {
     res.status(200).json({
       Status: 1,
-      Message: "Language added Successfully",
+      Message: "Project added Successfully",
       project: populatedProject,
     });
   } else {

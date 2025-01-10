@@ -5,7 +5,7 @@ const userRoutes = require('./Routes/userRoutes.js');
 const projectRoutes = require('./Routes/projectRoutes.js');
 const expertiseRoutes = require('./Routes/expertiseRoutes.js');
 const rateRoutes = require('./Routes/rateRoute.js');
-
+const path = require('path');
 
 const app = express();
 
@@ -17,6 +17,7 @@ app.use(BodyParser.urlencoded({ extended: true}));
 
 app.use(express.static('public'));
 
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 
 

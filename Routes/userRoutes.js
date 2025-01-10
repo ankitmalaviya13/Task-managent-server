@@ -38,7 +38,7 @@ router.post('/changePassword', protect,changePassword);
 router.delete('/logout',protect,logout);
 
 //List Users
-router.route('/users').post(users);
+router.route('/users').get(users);
 
 //thirdparty user
 router.route('/thirdparty').post(thirdpartyUser);
